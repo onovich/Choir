@@ -36,8 +36,8 @@ SoundCore soundCore;
 int bgmID;
 
 public void Init() {
-	soundCore = new SoundCore(soundRoot, 1);
-	bgmID = soundCore.CreateSoundPlayer(true, true, "BGM_Player", bgmClip);
+    soundCore = new SoundCore(soundRoot, 1);
+    bgmID = soundCore.CreateSoundPlayer(true, true, "BGM_Player", bgmClip);
 }
 
 public void BGM_Play() {
@@ -79,8 +79,8 @@ public void Clear() {
 SoundCore soundCore;
 
 public void Init() {
-	soundCore = new SoundCore(soundRoot, 4);
-	soundCore.CreateSoundPlayerGroup(false, 4, "SE_Player");
+    soundCore = new SoundCore(soundRoot, 4);
+    soundCore.CreateSoundPlayerGroup(false, 4, "SE_Player");
 }
 
 public void SE_Play() {
