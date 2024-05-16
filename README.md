@@ -1,5 +1,5 @@
 # Choir
-Choir, a lightweight sound effect lifecycle management library, named after "choir."<br/>
+Choir, a lightweight sound effect lifecycle management library, named after "唱诗班."<br/>
 **Choir，轻量级的音效生命周期管理库，取名自「唱诗班」。**
 
 Choir provides lifecycle management for AudioSource and AudioClip in Unity.<br/>
