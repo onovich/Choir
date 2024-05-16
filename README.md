@@ -5,6 +5,9 @@ Choir, a lightweight sound effect lifecycle management library, named after "唱
 Choir provides lifecycle management for AudioSource and AudioClip in Unity.<br/>
 **Choir 为 Unity 里的 AudioSource 和 AudioClip 提供生命周期托管。**
 
+For details, please refer to the sample project within the repository.<br/>
+**具体可见项目内的示例工程。**
+
 # Readiness
 Suitable for projects with low sound effect requirements, small-scale demos, and GameJams, making it easy to quickly set up a sound effect system.<br/>
 **适用于对音效要求不高的项目、小体量 Demo、GameJam，方便快速搭建音效系统。**
