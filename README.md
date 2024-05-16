@@ -16,8 +16,8 @@ Suitable for projects with low sound effect requirements, small-scale demos, and
 ## Implemented
 * Single-player management (suitable for BGM/BGS) and player group management (suitable for SE).<br/>
   **单播放器管理（适用于 BGM / BGS）、播放器组管理（适用于 SE）；** <br/>
-* Player's "Play If Free": It plays only when there is an available player in the group. This controls the number of the same type of sound effects played simultaneously, preventing resource waste and undesirable effects caused by overlapping sound volumes. <br/>
-  **播放器的 Play If Free，即：当组内存在空闲播放器时，才执行播放。通过这个方式可以控制同一时间同一类型音效的播放数量，避免大量音效叠加造成的资源浪费以及音量叠加造成的效果不适；** <br/>
+* Player group's "Play If Free": It plays only when there is an available player in the group. This controls the number of the same type of sound effects played simultaneously, preventing resource waste and undesirable effects caused by overlapping sound volumes. <br/>
+  **播放器组的 Play If Free，即：当组内存在空闲播放器时，才执行播放。通过这个方式可以控制同一时间同一类型音效的播放数量，避免大量音效叠加造成的资源浪费以及音量叠加造成的效果不适；** <br/>
 
 ## Planned
 * Player group's "Play When Free": When there are no available players in the group, it waits for a period until a player is released and then plays with a delay (suitable for staggering the playback of many SEs at the same time).<br/>
