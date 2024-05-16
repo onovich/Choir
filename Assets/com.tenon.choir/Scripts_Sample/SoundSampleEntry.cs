@@ -30,6 +30,12 @@ namespace TenonKit.Choir.Sample {
             var id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
         }
 
+        void Tick(float dt) {
+            if (!isInit) {
+                return;
+            }
+        }
+
         void OnDestroy() {
             soundCore.ReleaseAssets();
         }
