@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace TenonKit.Choir {
 
@@ -10,19 +9,13 @@ namespace TenonKit.Choir {
         SoundIDService iDService;
         public SoundIDService IDService => iDService;
 
-        string assetsLabel;
-        public string AssetsLabel => assetsLabel;
-
-        public AudioSource audioSourcePrefab;
-        public AsyncOperationHandle assetsHandle;
-
         SortedList<int, SoundPlayer> soundPlayers;
         Transform soundRoot;
+        public Transform SoundRoot => soundRoot;
 
-        public SoundCoreContext(string assetsLabel) {
+        public SoundCoreContext() {
             iDService = new SoundIDService();
             soundPlayers = new SortedList<int, SoundPlayer>();
-            this.assetsLabel = assetsLabel;
         }
 
         public void Inject(Transform soundRoot) {
@@ -35,6 +28,12 @@ namespace TenonKit.Choir {
 
         public void RemoveSoundPlayer(SoundPlayer soundPlayer) {
             soundPlayers.Remove(soundPlayer.ID);
+        }
+
+        public void ForEachSoundPlayer(System.Action<SoundPlayer> action) {
+            foreach (var soundPlayer in soundPlayers.Values) {
+                action(soundPlayer);
+            }
         }
 
         public bool TryGetSoundPlayer(int id, out SoundPlayer soundPlayer) {

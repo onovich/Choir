@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace TenonKit.Choir {
@@ -22,6 +20,11 @@ namespace TenonKit.Choir {
 
         public void SetAudioSource(AudioSource audioSource) {
             this.audioSource = audioSource;
+        }
+
+        public void TearDown() {
+            audioSource.Stop();
+            GameObject.Destroy(audioSource.gameObject);
         }
 
         public void Play() {

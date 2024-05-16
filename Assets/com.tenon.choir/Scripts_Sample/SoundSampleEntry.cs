@@ -5,10 +5,7 @@ namespace TenonKit.Choir.Sample {
 
     public class SoundSampleEntry : MonoBehaviour {
 
-        public string assetsLabel;
-        public Transform soundRoot;
         SoundCore soundCore;
-        bool isInit;
 
         void Awake() {
             CLog.Log = Debug.Log;
@@ -16,28 +13,16 @@ namespace TenonKit.Choir.Sample {
             CLog.Warning = Debug.LogWarning;
 
             Transform soundRoot = GameObject.Find("SoundRoot").transform;
-            soundCore = new SoundCore("Sound", soundRoot);
-
-            Action main = async () => {
-                await soundCore.LoadAssets();
-                Init();
-                isInit = true;
-            };
-            main.Invoke();
+            soundCore = new SoundCore(soundRoot);
         }
 
         void Init() {
             var id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
         }
 
-        void Tick(float dt) {
-            if (!isInit) {
-                return;
-            }
-        }
-
         void OnDestroy() {
-            soundCore.ReleaseAssets();
+
+            soundCore.TearDown();
         }
 
         public void Play() {
@@ -56,7 +41,7 @@ namespace TenonKit.Choir.Sample {
         }
 
         public void Clear() {
-            soundCore.Clear();
+            soundCore.TearDown();
         }
 
     }

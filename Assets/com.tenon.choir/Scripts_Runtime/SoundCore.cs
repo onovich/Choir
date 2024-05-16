@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace TenonKit.Choir {
 
@@ -10,28 +9,16 @@ namespace TenonKit.Choir {
 
         SoundCoreContext ctx;
 
-        public SoundCore(string assetsLabel, Transform soundRoot) {
-            ctx = new SoundCoreContext(assetsLabel);
+        public SoundCore(Transform soundRoot) {
+            ctx = new SoundCoreContext();
             ctx.Inject(soundRoot);
         }
 
-        // Load
-        public async Task LoadAssets() {
-            var handle = Addressables.LoadAssetAsync<GameObject>(ctx.AssetsLabel);
-            var prefab = await handle.Task;
-            ctx.audioSourcePrefab = prefab.GetComponent<AudioSource>();
-            ctx.assetsHandle = handle;
-        }
-
-        // Release
-        public void ReleaseAssets() {
-            if (ctx.assetsHandle.IsValid()) {
-                Addressables.Release(ctx.assetsHandle);
-            }
-        }
-
-        // Clear
-        public void Clear() {
+        // Tear Down
+        public void TearDown() {
+            ctx.ForEachSoundPlayer((soundPlayer) => {
+                soundPlayer.TearDown();
+            });
             ctx.Clear();
         }
 
