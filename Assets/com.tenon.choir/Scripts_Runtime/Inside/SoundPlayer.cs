@@ -27,8 +27,10 @@ namespace TenonKit.Choir {
         }
 
         internal void TearDown() {
-            audioSource.Stop();
-            GameObject.Destroy(audioSource.gameObject);
+            if (audioSource != null) {
+                audioSource.Stop();
+                GameObject.Destroy(audioSource.gameObject);
+            }
         }
 
         internal bool TryPlay() {

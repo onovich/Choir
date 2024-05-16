@@ -74,7 +74,7 @@ namespace TenonKit.Choir.Sample {
 
         void OnDestroy() {
             Unbinding();
-            soundCore.TearDown();
+            Clear();
         }
 
         #region BGM

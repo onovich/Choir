@@ -18,11 +18,11 @@ namespace TenonKit.Choir {
         public void TearDown() {
             var len = ctx.TakeAllSinglePlayer(out SoundPlayer[] array);
             for (int i = 0; i < len; i++) {
-                array[i].TearDown();
+                array[i]?.TearDown();
             }
             len = ctx.TakeAllGroupPlayer(out array);
             for (int i = 0; i < len; i++) {
-                array[i].TearDown();
+                array[i]?.TearDown();
             }
             ctx.Clear();
         }
