@@ -5,3 +5,8 @@
 ** 空间音效: 根据距离调整音量, 支持自定义缓动衰变参数
 ** 支持生成到空间或对象
 ** 分 Bus 设效果器
+
+-
+设计
+PlayIfFree: Group 中有 Free 状态的 Player 即播放，如果不满足则丢弃该指令
+PlayWhenFree: Group 中有 Free 状态的 Player 即播放，如果不满足则延迟执行该指令

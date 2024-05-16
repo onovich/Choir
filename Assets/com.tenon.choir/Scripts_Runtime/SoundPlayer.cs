@@ -22,13 +22,18 @@ namespace TenonKit.Choir {
             this.audioSource = audioSource;
         }
 
+        public void SetAudioClip(AudioClip clip) {
+            audioSource.clip = clip;
+        }
+
         public void TearDown() {
             audioSource.Stop();
             GameObject.Destroy(audioSource.gameObject);
         }
 
-        public void Play() {
-            audioSource.Play();
+        public bool TryPlay() {
+            audioSource?.Play();
+            return audioSource != null;
         }
 
         public void Stop() {

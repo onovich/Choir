@@ -6,6 +6,7 @@ namespace TenonKit.Choir.Sample {
     public class SoundSampleEntry : MonoBehaviour {
 
         SoundCore soundCore;
+        int bgmID;
 
         void Awake() {
             CLog.Log = Debug.Log;
@@ -17,27 +18,23 @@ namespace TenonKit.Choir.Sample {
         }
 
         void Init() {
-            var id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
+            bgmID = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
         }
 
         void OnDestroy() {
-
             soundCore.TearDown();
         }
 
-        public void Play() {
-            int id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
-            soundCore.Play(id);
+        public void PlayBGM() {
+            soundCore.Play(bgmID);
         }
 
-        public void Pause() {
-            int id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
-            soundCore.Pause(id);
+        public void PauseBGM() {
+            soundCore.Pause(bgmID);
         }
 
-        public void UnPause() {
-            int id = soundCore.CreateSoundPlayer(true, false, "SoundPlayer");
-            soundCore.UnPause(id);
+        public void UnPauseBGM() {
+            soundCore.UnPause(bgmID);
         }
 
         public void Clear() {

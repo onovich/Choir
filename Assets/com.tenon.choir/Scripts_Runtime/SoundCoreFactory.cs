@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,13 @@ namespace TenonKit.Choir {
             soundPlayer.SetAudioSource(audioSource);
             soundPlayer.SetID(id);
             return soundPlayer;
+        }
+
+        public static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int count, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
+            for (int i = 0; i < count; i++) {
+                SoundPlayer soundPlayer = SpawnSoundPlayer(ctx, autoPlay, false, $"{groupName} - {i}", clip);
+                onSpawn?.Invoke(soundPlayer);
+            }
         }
 
     }
