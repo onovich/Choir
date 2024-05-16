@@ -9,19 +9,21 @@ namespace TenonKit.Choir {
 
         SoundCoreContext ctx;
 
-        public SoundCore(Transform soundRoot) {
-            ctx = new SoundCoreContext();
+        public SoundCore(Transform soundRoot, int capacity) {
+            ctx = new SoundCoreContext(capacity);
             ctx.Inject(soundRoot);
         }
 
         // Tear Down
         public void TearDown() {
-            ctx.ForEachSinglePlayer((soundPlayer) => {
-                soundPlayer.TearDown();
-            });
-            ctx.ForEachPlayerInAllGroup((soundPlayer) => {
-                soundPlayer.TearDown();
-            });
+            var len = ctx.TakeAllSinglePlayer(out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].TearDown();
+            }
+            len = ctx.TakeAllGroupPlayer(out array);
+            for (int i = 0; i < len; i++) {
+                array[i].TearDown();
+            }
             ctx.Clear();
         }
 
@@ -112,72 +114,81 @@ namespace TenonKit.Choir {
 
         #region Group Player
         // Create Player Group
-        public void CreateSoundPlayerGroup(bool autoPlay, int count, string groupName = "SoundPlayer", AudioClip clipArr = null) {
-            SoundCoreFactory.SpawnSoundPlayerGroup(ctx, autoPlay, count, groupName, clipArr, (soundPlayer) => {
+        public void CreateSoundPlayerGroup(bool autoPlay, int capacity, string groupName = "SoundPlayer", AudioClip clipArr = null) {
+            SoundCoreFactory.SpawnSoundPlayerGroup(ctx, autoPlay, capacity, groupName, clipArr, (soundPlayer) => {
                 ctx.AddToPlayerGroup(soundPlayer, groupName);
             });
         }
 
         // Tear Down Player Group
         public void TearDownPlayerGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.TearDown();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].TearDown();
+            }
             ctx.RemovePlayerGroup(groupName);
         }
 
         // Play In Group If Free
         public void PlayInGroupIfFree(string groupName, AudioClip clip = null) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                if (soundPlayer.IsPlaying == false) {
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                if (array[i].IsPlaying == false) {
                     if (clip != null) {
-                        soundPlayer.SetAudioClip(clip);
+                        array[i].SetAudioClip(clip);
                     }
-                    soundPlayer.TryPlay();
+                    array[i].TryPlay();
+                    return;
                 }
-            });
+            }
         }
 
         // Pause In Group
         public void PauseInGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.Pause();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].Pause();
+            }
         }
 
         // UnPause In Group
         public void UnPauseInGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.UnPause();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].UnPause();
+            }
         }
 
         // Stop In Group
         public void StopInGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.Stop();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].Stop();
+            }
         }
 
         // Set Volume In Group
         public void SetVolumeInGroup(string groupName, float volume) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.SetVolume(volume);
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].SetVolume(volume);
+            }
         }
 
         // Set Mute In Group
         public void SetMuteInGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.SetMute();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].SetMute();
+            }
         }
 
         // Set UnMute In Group
         public void SetUnMuteInGroup(string groupName) {
-            ctx.ForEachPlayerInGroup(groupName, (soundPlayer) => {
-                soundPlayer.SetUnMute();
-            });
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].SetUnMute();
+            }
         }
         #endregion
 

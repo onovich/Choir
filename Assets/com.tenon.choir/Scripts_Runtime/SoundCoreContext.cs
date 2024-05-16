@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +12,15 @@ namespace TenonKit.Choir {
 
         SortedList<int, SoundPlayer> singlePlayers;
         Dictionary<string, List<SoundPlayer>> playerGroups;
+        SoundPlayer[] temp;
 
         Transform soundRoot;
         public Transform SoundRoot => soundRoot;
 
-        public SoundCoreContext() {
+        public SoundCoreContext(int capacity) {
             iDService = new SoundIDService();
             singlePlayers = new SortedList<int, SoundPlayer>();
+            temp = new SoundPlayer[capacity];
         }
 
         public void Inject(Transform soundRoot) {
@@ -33,10 +36,10 @@ namespace TenonKit.Choir {
             singlePlayers.Remove(soundPlayer.ID);
         }
 
-        public void ForEachSinglePlayer(System.Action<SoundPlayer> action) {
-            foreach (var soundPlayer in singlePlayers.Values) {
-                action(soundPlayer);
-            }
+        public int TakeAllSinglePlayer(out SoundPlayer[] array) {
+            array = temp;
+            singlePlayers.Values.CopyTo(array, 0);
+            return singlePlayers.Count;
         }
 
         public bool TryGetSinglePlayer(int id, out SoundPlayer soundPlayer) {
@@ -73,26 +76,36 @@ namespace TenonKit.Choir {
             }
         }
 
-        public void ForEachPlayerInGroup(string groupName, System.Action<SoundPlayer> action) {
+        public int TakeAllPlayerInGroup(string groupName, out SoundPlayer[] array) {
             if (playerGroups == null) {
-                return;
+                array = null;
+                return 0;
             }
-            if (playerGroups.ContainsKey(groupName)) {
-                foreach (var soundPlayer in playerGroups[groupName]) {
-                    action(soundPlayer);
-                }
+            if (!playerGroups.TryGetValue(groupName, out List<SoundPlayer> soundPlayers)) {
+                array = null;
+                return 0;
             }
+            array = temp;
+            soundPlayers.CopyTo(array, 0);
+            return soundPlayers.Count;
         }
 
-        public void ForEachPlayerInAllGroup(System.Action<SoundPlayer> action) {
+        public int TakeAllGroupPlayer(out SoundPlayer[] array) {
             if (playerGroups == null) {
-                return;
+                array = null;
+                return 0;
             }
+            int count = 0;
             foreach (var soundPlayers in playerGroups.Values) {
-                foreach (var soundPlayer in soundPlayers) {
-                    action(soundPlayer);
-                }
+                count += soundPlayers.Count;
             }
+            array = temp;
+            int index = 0;
+            foreach (var soundPlayers in playerGroups.Values) {
+                soundPlayers.CopyTo(array, index);
+                index += soundPlayers.Count;
+            }
+            return count;
         }
 
         public bool TryGetPlayerGroup(string groupName, out List<SoundPlayer> soundPlayers) {
@@ -102,6 +115,8 @@ namespace TenonKit.Choir {
 
         public void Clear() {
             singlePlayers.Clear();
+            playerGroups.Clear();
+            Array.Clear(temp, 0, temp.Length);
         }
 
     }

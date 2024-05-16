@@ -15,11 +15,10 @@ namespace TenonKit.Choir {
             go.transform.SetParent(ctx.SoundRoot);
 
             // AudioSource
-            audioSource.playOnAwake = autoPlay;
+            audioSource.clip = clip;
             audioSource.loop = isLoop;
-            if (clip != null) {
-                audioSource.clip = clip;
-            }
+            audioSource.playOnAwake = autoPlay;
+            if (autoPlay) audioSource.Play();
 
             // ID
             var id = ctx.IDService.PickPlayerID();
@@ -30,8 +29,8 @@ namespace TenonKit.Choir {
             return soundPlayer;
         }
 
-        public static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int count, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
-            for (int i = 0; i < count; i++) {
+        public static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int capacity, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
+            for (int i = 0; i < capacity; i++) {
                 SoundPlayer soundPlayer = SpawnSoundPlayer(ctx, autoPlay, false, $"{groupName} - {i}", clip);
                 onSpawn?.Invoke(soundPlayer);
             }
