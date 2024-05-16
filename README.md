@@ -36,7 +36,7 @@ SoundCore soundCore;
 int bgmID;
 
 public void Init() {
-    soundCore = new SoundCore(soundRoot, 1);
+    soundCore = new SoundCore(soundRoot, 1); // Only Need One Player In This Case
     bgmID = soundCore.CreateSoundPlayer(true, true, "BGM_Player", bgmClip);
 }
 
@@ -79,8 +79,8 @@ public void Clear() {
 SoundCore soundCore;
 
 public void Init() {
-    soundCore = new SoundCore(soundRoot, 4);
-    soundCore.CreateSoundPlayerGroup(false, 4, "SE_Player");
+    soundCore = new SoundCore(soundRoot, 4); // 4 is an example. Choose the maximum number of sounds supported in the current scene as needed.
+    soundCore.CreateSoundPlayerGroup(false, 4, "SE_Player"); // 4 is an example. Choose the maximum number of players that can simultaneously play the sound effect as needed.
 }
 
 public void SE_Play() {
