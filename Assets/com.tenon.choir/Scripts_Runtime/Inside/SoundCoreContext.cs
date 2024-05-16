@@ -5,50 +5,50 @@ using UnityEngine;
 
 namespace TenonKit.Choir {
 
-    public class SoundCoreContext {
+    internal class SoundCoreContext {
 
         SoundIDService iDService;
-        public SoundIDService IDService => iDService;
+        internal SoundIDService IDService => iDService;
 
         SortedList<int, SoundPlayer> singlePlayers;
         Dictionary<string, List<SoundPlayer>> playerGroups;
         SoundPlayer[] temp;
 
         Transform soundRoot;
-        public Transform SoundRoot => soundRoot;
+        internal Transform SoundRoot => soundRoot;
 
-        public SoundCoreContext(int capacity) {
+        internal SoundCoreContext(int capacity) {
             iDService = new SoundIDService();
             singlePlayers = new SortedList<int, SoundPlayer>();
             temp = new SoundPlayer[capacity];
         }
 
-        public void Inject(Transform soundRoot) {
+        internal void Inject(Transform soundRoot) {
             this.soundRoot = soundRoot;
         }
 
         #region Single Player
-        public void AddSinglePlayer(SoundPlayer soundPlayer) {
+        internal void AddSinglePlayer(SoundPlayer soundPlayer) {
             singlePlayers.Add(soundPlayer.ID, soundPlayer);
         }
 
-        public void RemoveSinglePlayer(SoundPlayer soundPlayer) {
+        internal void RemoveSinglePlayer(SoundPlayer soundPlayer) {
             singlePlayers.Remove(soundPlayer.ID);
         }
 
-        public int TakeAllSinglePlayer(out SoundPlayer[] array) {
+        internal int TakeAllSinglePlayer(out SoundPlayer[] array) {
             array = temp;
             singlePlayers.Values.CopyTo(array, 0);
             return singlePlayers.Count;
         }
 
-        public bool TryGetSinglePlayer(int id, out SoundPlayer soundPlayer) {
+        internal bool TryGetSinglePlayer(int id, out SoundPlayer soundPlayer) {
             return singlePlayers.TryGetValue(id, out soundPlayer);
         }
         #endregion
 
         #region Group Player
-        public void AddToPlayerGroup(SoundPlayer soundPlayer, string groupName) {
+        internal void AddToPlayerGroup(SoundPlayer soundPlayer, string groupName) {
             if (playerGroups == null) {
                 playerGroups = new Dictionary<string, List<SoundPlayer>>();
             }
@@ -58,7 +58,7 @@ namespace TenonKit.Choir {
             playerGroups[groupName].Add(soundPlayer);
         }
 
-        public void RemoveFromPlayerGroup(SoundPlayer soundPlayer, string groupName) {
+        internal void RemoveFromPlayerGroup(SoundPlayer soundPlayer, string groupName) {
             if (playerGroups == null) {
                 return;
             }
@@ -67,7 +67,7 @@ namespace TenonKit.Choir {
             }
         }
 
-        public void RemovePlayerGroup(string groupName) {
+        internal void RemovePlayerGroup(string groupName) {
             if (playerGroups == null) {
                 return;
             }
@@ -76,7 +76,7 @@ namespace TenonKit.Choir {
             }
         }
 
-        public int TakeAllPlayerInGroup(string groupName, out SoundPlayer[] array) {
+        internal int TakeAllPlayerInGroup(string groupName, out SoundPlayer[] array) {
             if (playerGroups == null) {
                 array = null;
                 return 0;
@@ -90,7 +90,7 @@ namespace TenonKit.Choir {
             return soundPlayers.Count;
         }
 
-        public int TakeAllGroupPlayer(out SoundPlayer[] array) {
+        internal int TakeAllGroupPlayer(out SoundPlayer[] array) {
             if (playerGroups == null) {
                 array = null;
                 return 0;
@@ -108,12 +108,12 @@ namespace TenonKit.Choir {
             return count;
         }
 
-        public bool TryGetPlayerGroup(string groupName, out List<SoundPlayer> soundPlayers) {
+        internal bool TryGetPlayerGroup(string groupName, out List<SoundPlayer> soundPlayers) {
             return playerGroups.TryGetValue(groupName, out soundPlayers);
         }
         #endregion
 
-        public void Clear() {
+        internal void Clear() {
             singlePlayers.Clear();
             playerGroups.Clear();
             Array.Clear(temp, 0, temp.Length);

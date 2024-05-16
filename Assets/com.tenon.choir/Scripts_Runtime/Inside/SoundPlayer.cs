@@ -2,61 +2,61 @@ using UnityEngine;
 
 namespace TenonKit.Choir {
 
-    public class SoundPlayer {
+    internal class SoundPlayer {
 
         int id;
-        public int ID => id;
+        internal int ID => id;
 
         AudioSource audioSource;
-        public bool IsLoop => audioSource.loop;
-        public bool IsPlaying => audioSource.isPlaying;
+        internal bool IsLoop => audioSource.loop;
+        internal bool IsPlaying => audioSource.isPlaying;
 
-        public SoundPlayer() {
+        internal SoundPlayer() {
         }
 
-        public void SetID(int id) {
+        internal void SetID(int id) {
             this.id = id;
         }
 
-        public void SetAudioSource(AudioSource audioSource) {
+        internal void SetAudioSource(AudioSource audioSource) {
             this.audioSource = audioSource;
         }
 
-        public void SetAudioClip(AudioClip clip) {
+        internal void SetAudioClip(AudioClip clip) {
             audioSource.clip = clip;
         }
 
-        public void TearDown() {
+        internal void TearDown() {
             audioSource.Stop();
             GameObject.Destroy(audioSource.gameObject);
         }
 
-        public bool TryPlay() {
+        internal bool TryPlay() {
             audioSource?.Play();
             return audioSource != null;
         }
 
-        public void Stop() {
+        internal void Stop() {
             audioSource.Stop();
         }
 
-        public void Pause() {
+        internal void Pause() {
             audioSource.Pause();
         }
 
-        public void UnPause() {
+        internal void UnPause() {
             audioSource.UnPause();
         }
 
-        public void SetVolume(float volume) {
+        internal void SetVolume(float volume) {
             audioSource.volume = volume;
         }
 
-        public void SetMute() {
+        internal void SetMute() {
             audioSource.mute = true;
         }
 
-        public void SetUnMute() {
+        internal void SetUnMute() {
             audioSource.mute = false;
         }
 

@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace TenonKit.Choir {
 
-    public static class SoundCoreFactory {
+    internal static class SoundCoreFactory {
 
-        public static SoundPlayer SpawnSoundPlayer(SoundCoreContext ctx, bool autoPlay, bool isLoop, string playerName, AudioClip clip) {
+        internal static SoundPlayer SpawnSoundPlayer(SoundCoreContext ctx, bool autoPlay, bool isLoop, string playerName, AudioClip clip) {
 
             // GameObject
             GameObject go = new GameObject();
@@ -29,7 +29,7 @@ namespace TenonKit.Choir {
             return soundPlayer;
         }
 
-        public static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int capacity, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
+        internal static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int capacity, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
             for (int i = 0; i < capacity; i++) {
                 SoundPlayer soundPlayer = SpawnSoundPlayer(ctx, autoPlay, false, $"{groupName} - {i}", clip);
                 onSpawn?.Invoke(soundPlayer);

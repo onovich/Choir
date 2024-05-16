@@ -1,10 +1,10 @@
 namespace TenonKit.Choir {
 
-    public class SoundIDService {
+    internal class SoundIDService {
 
         int playerID = 0;
 
-        public int PickPlayerID() {
+        internal int PickPlayerID() {
             return playerID++;
         }
 
