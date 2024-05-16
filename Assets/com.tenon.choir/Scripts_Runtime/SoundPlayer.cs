@@ -40,6 +40,18 @@ namespace TenonKit.Choir {
             audioSource.UnPause();
         }
 
+        public void SetVolume(float volume) {
+            audioSource.volume = volume;
+        }
+
+        public void SetMute() {
+            audioSource.mute = true;
+        }
+
+        public void SetUnMute() {
+            audioSource.mute = false;
+        }
+
     }
 
 }
