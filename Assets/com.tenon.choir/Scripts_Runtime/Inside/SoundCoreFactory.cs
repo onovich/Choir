@@ -31,7 +31,7 @@ namespace TenonKit.Choir {
 
         internal static void SpawnSoundPlayerGroup(SoundCoreContext ctx, bool autoPlay, int capacity, string groupName, AudioClip clip, Action<SoundPlayer> onSpawn) {
             for (int i = 0; i < capacity; i++) {
-                SoundPlayer soundPlayer = SpawnSoundPlayer(ctx, autoPlay, false, $"{groupName} - {i}", clip);
+                SoundPlayer soundPlayer = SpawnSoundPlayer(ctx, autoPlay, false, $"{groupName}", clip);
                 onSpawn?.Invoke(soundPlayer);
             }
         }
