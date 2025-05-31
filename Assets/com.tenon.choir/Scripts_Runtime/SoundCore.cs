@@ -35,6 +35,16 @@ namespace TenonKit.Choir {
             return soundPlayer.ID;
         }
 
+        // AudioSource
+        public AudioSource GetAudioSource(int id) {
+            var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
+            if (!has) {
+                CLog.Log($"SoundPlayer not found ID = {id}");
+                return null;
+            }
+            return soundPlayer.audioSource;
+        }
+
         // Tear Down Player
         public void TearDownPlayer(int id) {
             var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);

@@ -7,7 +7,7 @@ namespace TenonKit.Choir {
         int id;
         internal int ID => id;
 
-        AudioSource audioSource;
+        public AudioSource audioSource;
         internal bool IsLoop => audioSource.loop;
         internal bool IsPlaying => audioSource.isPlaying;
 
