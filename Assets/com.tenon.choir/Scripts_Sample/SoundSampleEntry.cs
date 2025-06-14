@@ -72,6 +72,11 @@ namespace TenonKit.Choir.Sample {
             soundNavigationPanel.GroupSetUnMuteHandle -= SE_SetUnMute;
         }
 
+        void Update() {
+            float dt = Time.deltaTime;
+            soundCore.Tick(dt);
+        }
+
         void OnDestroy() {
             Unbinding();
             Clear();
@@ -79,7 +84,7 @@ namespace TenonKit.Choir.Sample {
 
         #region BGM
         public void BGM_Play() {
-            soundCore.Play(bgmID);
+            soundCore.SetAndPlay(bgmID, bgmClip, true, 2f);
         }
 
         public void BGM_Pause() {
@@ -91,7 +96,7 @@ namespace TenonKit.Choir.Sample {
         }
 
         public void BGM_Stop() {
-            soundCore.Stop(bgmID);
+            soundCore.Stop(bgmID, true, 2f);
         }
 
         public void BGM_SetVolume(float volume) {

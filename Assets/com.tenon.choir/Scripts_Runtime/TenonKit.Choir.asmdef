@@ -1,7 +1,9 @@
 {
     "name": "TenonKit.Choir",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:3e1313b9d6abf4d0394d17448e7e610f"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

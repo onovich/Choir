@@ -7,11 +7,16 @@ namespace TenonKit.Choir {
         int id;
         internal int ID => id;
 
-        public AudioSource audioSource;
+        internal float playerVolumeFactor;
+        internal float fadeVolumeFactor;
+
+        AudioSource audioSource;
+        internal AudioSource AudioSource => audioSource;
         internal bool IsLoop => audioSource.loop;
         internal bool IsPlaying => audioSource.isPlaying;
 
         internal SoundPlayer() {
+            fadeVolumeFactor = 1f;
         }
 
         internal void SetID(int id) {
@@ -34,8 +39,15 @@ namespace TenonKit.Choir {
         }
 
         internal bool TryPlay() {
-            audioSource?.Play();
-            return audioSource != null;
+            if (audioSource == null || audioSource.clip == null) {
+                return false;
+            }
+            if (audioSource.isPlaying) {
+                audioSource.Stop();
+            }
+            audioSource.Play();
+            audioSource.volume = playerVolumeFactor * fadeVolumeFactor;
+            return true;
         }
 
         internal void Stop() {
@@ -50,8 +62,14 @@ namespace TenonKit.Choir {
             audioSource.UnPause();
         }
 
-        internal void SetVolume(float volume) {
-            audioSource.volume = volume;
+        internal void SetVolume_Force(float factor) {
+            audioSource.volume = fadeVolumeFactor * factor;
+            this.playerVolumeFactor = factor;
+        }
+
+        internal void SetFadeVolume(float fator) {
+            audioSource.volume = playerVolumeFactor * fator;
+            fadeVolumeFactor = fator;
         }
 
         internal void SetMute() {

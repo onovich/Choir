@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
+using MortiseFrame.Swing;
+using System.Threading;
 
 namespace TenonKit.Choir {
 
@@ -27,6 +30,77 @@ namespace TenonKit.Choir {
             ctx.Clear();
         }
 
+        #region Tick
+        public void Tick(float dt) {
+            ApplyFadeInTask(dt);
+            ApplyFadeOutTask(dt);
+            ctx.RemoveTaskForEach((task) => {
+                if (task.fadeType == SoundFadeEnum.FadeIn) {
+                    ctx.RemoveFadeInTask(task);
+                } else if (task.fadeType == SoundFadeEnum.FadeOut) {
+                    ctx.RemoveFadeOutTask(task);
+                }
+            });
+            ctx.ClearRemoveTask();
+        }
+
+        #endregion
+
+        #region Task
+        void ApplyFadeInTask(float dt) {
+            ctx.FadeInTaskForEach((ref SoundFadeTaskModel task) => {
+
+                int id = task.playerID;
+                float duration = task.duration;
+                var easingType = task.easingType;
+                var easingMode = task.easingMode;
+
+                ref float timer = ref task.timer;
+                timer += dt;
+
+                var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
+                if (!has) {
+                    CLog.Log($"SoundPlayer not found ID = {id}");
+                    return;
+                }
+                if (timer >= duration) {
+                    soundPlayer.SetFadeVolume(1);
+                    ctx.AddRemoveTask(task);
+                    return;
+                }
+                float v = EasingHelper.Easing(0, 1, timer, duration, easingType, easingMode);
+                soundPlayer.SetFadeVolume(v);
+            });
+        }
+
+        void ApplyFadeOutTask(float dt) {
+            ctx.FadeOutTaskForEach((ref SoundFadeTaskModel task) => {
+
+                int id = task.playerID;
+                float duration = task.duration;
+                var easingType = task.easingType;
+                var easingMode = task.easingMode;
+
+                ref float timer = ref task.timer;
+                timer += dt;
+
+                var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
+                if (!has) {
+                    CLog.Log($"SoundPlayer not found ID = {id}");
+                    return;
+                }
+                if (timer >= duration) {
+                    soundPlayer.SetFadeVolume(0);
+                    soundPlayer.Stop();
+                    ctx.AddRemoveTask(task);
+                    return;
+                }
+                float v = EasingHelper.Easing(1, 0, timer, duration, easingType, easingMode);
+                soundPlayer.SetFadeVolume(v);
+            });
+        }
+        #endregion
+
         #region  Single Player
         // Create Player
         public int CreateSoundPlayer(bool autoPlay, bool isLoop, string name = "SoundPlayer", AudioClip clip = null) {
@@ -42,7 +116,7 @@ namespace TenonKit.Choir {
                 CLog.Log($"SoundPlayer not found ID = {id}");
                 return null;
             }
-            return soundPlayer.audioSource;
+            return soundPlayer.AudioSource;
         }
 
         // Tear Down Player
@@ -56,7 +130,7 @@ namespace TenonKit.Choir {
         }
 
         // Play
-        public void Play(int id, AudioClip clip = null) {
+        public void SetAndPlay(int id, AudioClip clip, bool fadeIn = false, float duration = 0.5f, EasingType easingType = EasingType.Linear, EasingMode easingMode = EasingMode.None) {
             var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
@@ -64,7 +138,36 @@ namespace TenonKit.Choir {
             if (clip != null) {
                 soundPlayer.SetAudioClip(clip);
             }
+
+            if (fadeIn) {
+                var task = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeIn, duration,
+                    easingType, easingMode);
+                ctx.AddFadeInTask(task);
+                soundPlayer.TryPlay();
+                soundPlayer.SetFadeVolume(0);
+                return;
+            }
             soundPlayer.TryPlay();
+        }
+
+        SoundFadeTaskModel CreateFadeTask(SoundPlayer player, SoundFadeEnum fadeType, float duration, EasingType easingType, EasingMode easingMode) {
+            SoundFadeTaskModel task = new SoundFadeTaskModel {
+                playerID = player.ID,
+                fadeType = fadeType,
+                duration = duration,
+                timer = 0f,
+                easingType = easingType,
+                easingMode = easingMode
+            };
+            return task;
+        }
+
+        public void Play(int id, bool fadeIn = false, float duration = 0.5f, EasingType easingType = EasingType.Linear, EasingMode easingMode = EasingMode.None) {
+            var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
+            if (!has) {
+                CLog.Log($"SoundPlayer not found ID = {id}");
+            }
+            SetAndPlay(id, soundPlayer.AudioSource.clip, fadeIn, duration, easingType, easingMode);
         }
 
         // Pause
@@ -86,10 +189,16 @@ namespace TenonKit.Choir {
         }
 
         // Stop
-        public void Stop(int id) {
+        public void Stop(int id, bool fadeOut = false, float duration = 0.5f, EasingType easingType = EasingType.Linear, EasingMode easingMode = EasingMode.None) {
             var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
+            }
+            if (fadeOut) {
+                var task = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeOut, duration,
+                    easingType, easingMode);
+                ctx.AddFadeOutTask(task);
+                return;
             }
             soundPlayer.Stop();
         }
@@ -100,7 +209,7 @@ namespace TenonKit.Choir {
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
-            soundPlayer.SetVolume(volume);
+            soundPlayer.SetVolume_Force(volume);
         }
 
         // Set Mute
@@ -181,7 +290,7 @@ namespace TenonKit.Choir {
         public void SetVolumeInGroup(string groupName, float volume) {
             var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
             for (int i = 0; i < len; i++) {
-                array[i].SetVolume(volume);
+                array[i].SetVolume_Force(volume);
             }
         }
 

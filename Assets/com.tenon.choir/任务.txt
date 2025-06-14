@@ -7,6 +7,11 @@
 ** 支持生成到空间或对象
 ** 分 Bus 设效果器
 
+4. Fade In / Fade Out
+已实现单 Player 的 Fade In / Fade Out
+未实现基于组的，不过好像基于组批量 Fade In / Fade Out 的需求不强烈
+一种场景：退出游戏时，所有 Group 全部执行 Fade Out 而非立刻停止(一般是 SFX, 但这么做也比较罕见)
+
 -
 设计
 PlayIfFree: Group 中有 Free 状态的 Player 即播放，如果不满足则丢弃该指令
