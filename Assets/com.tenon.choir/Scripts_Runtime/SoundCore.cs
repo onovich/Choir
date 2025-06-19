@@ -148,6 +148,7 @@ namespace TenonKit.Choir {
                 return;
             }
             soundPlayer.TryPlay();
+            soundPlayer.SetFadeVolume(1);
         }
 
         SoundFadeTaskModel CreateFadeTask(SoundPlayer player, SoundFadeEnum fadeType, float duration, EasingType easingType, EasingMode easingMode) {

@@ -84,7 +84,7 @@ namespace TenonKit.Choir.Sample {
 
         #region BGM
         public void BGM_Play() {
-            soundCore.SetAndPlay(bgmID, bgmClip, true, 2f);
+            soundCore.SetAndPlay(bgmID, bgmClip);
         }
 
         public void BGM_Pause() {
