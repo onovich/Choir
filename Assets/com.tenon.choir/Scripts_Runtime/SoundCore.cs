@@ -64,12 +64,12 @@ namespace TenonKit.Choir {
                     return;
                 }
                 if (timer >= duration) {
-                    soundPlayer.SetFadeVolume(1);
+                    soundPlayer.SetFadeVolume(1, ctx.globalVolume);
                     ctx.AddRemoveTask(task);
                     return;
                 }
                 float v = EasingHelper.Easing(0, 1, timer, duration, easingType, easingMode);
-                soundPlayer.SetFadeVolume(v);
+                soundPlayer.SetFadeVolume(v, ctx.globalVolume);
             });
         }
 
@@ -90,14 +90,29 @@ namespace TenonKit.Choir {
                     return;
                 }
                 if (timer >= duration) {
-                    soundPlayer.SetFadeVolume(0);
+                    soundPlayer.SetFadeVolume(0, ctx.globalVolume);
                     soundPlayer.Stop();
                     ctx.AddRemoveTask(task);
                     return;
                 }
                 float v = EasingHelper.Easing(1, 0, timer, duration, easingType, easingMode);
-                soundPlayer.SetFadeVolume(v);
+                soundPlayer.SetFadeVolume(v, ctx.globalVolume);
             });
+        }
+        #endregion
+
+        #region Global
+        // Set Global Volume
+        public void SetGlobalVolume(float volume) {
+            ctx.globalVolume = volume;
+            var len = ctx.TakeAllSinglePlayer(out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                array[i].SetVolume_Force(array[i].playerVolumeFactor, volume);
+            }
+            len = ctx.TakeAllGroupPlayer(out array);
+            for (int i = 0; i < len; i++) {
+                array[i].SetVolume_Force(array[i].playerVolumeFactor, volume);
+            }
         }
         #endregion
 
@@ -144,11 +159,11 @@ namespace TenonKit.Choir {
                     easingType, easingMode);
                 ctx.AddFadeInTask(task);
                 soundPlayer.TryPlay();
-                soundPlayer.SetFadeVolume(0);
+                soundPlayer.SetFadeVolume(0, ctx.globalVolume);
                 return;
             }
             soundPlayer.TryPlay();
-            soundPlayer.SetFadeVolume(1);
+            soundPlayer.SetFadeVolume(1, ctx.globalVolume);
         }
 
         SoundFadeTaskModel CreateFadeTask(SoundPlayer player, SoundFadeEnum fadeType, float duration, EasingType easingType, EasingMode easingMode) {
@@ -210,7 +225,7 @@ namespace TenonKit.Choir {
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
-            soundPlayer.SetVolume_Force(volume);
+            soundPlayer.SetVolume_Force(volume, ctx.globalVolume);
         }
 
         // Set Mute
@@ -291,7 +306,7 @@ namespace TenonKit.Choir {
         public void SetVolumeInGroup(string groupName, float volume) {
             var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
             for (int i = 0; i < len; i++) {
-                array[i].SetVolume_Force(volume);
+                array[i].SetVolume_Force(volume, ctx.globalVolume);
             }
         }
 

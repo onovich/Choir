@@ -21,6 +21,8 @@ namespace TenonKit.Choir {
         Transform soundRoot;
         internal Transform SoundRoot => soundRoot;
 
+        internal float globalVolume;
+
         internal SoundCoreContext(int capacity) {
             iDService = new SoundIDService();
             singlePlayers = new SortedList<int, SoundPlayer>();
@@ -28,6 +30,7 @@ namespace TenonKit.Choir {
             fadeOutTasks = new List<SoundFadeTaskModel>(capacity);
             fadeInTasks = new List<SoundFadeTaskModel>(capacity);
             removeList = new List<SoundFadeTaskModel>(capacity);
+            globalVolume = 1.0f;
         }
 
         internal void Inject(Transform soundRoot) {

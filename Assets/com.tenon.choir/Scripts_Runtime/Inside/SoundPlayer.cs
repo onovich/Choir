@@ -62,13 +62,13 @@ namespace TenonKit.Choir {
             audioSource.UnPause();
         }
 
-        internal void SetVolume_Force(float factor) {
-            audioSource.volume = fadeVolumeFactor * factor;
+        internal void SetVolume_Force(float factor, float globalVolume) {
+            audioSource.volume = fadeVolumeFactor * factor * globalVolume;
             this.playerVolumeFactor = factor;
         }
 
-        internal void SetFadeVolume(float fator) {
-            audioSource.volume = playerVolumeFactor * fator;
+        internal void SetFadeVolume(float fator, float globalVolume) {
+            audioSource.volume = playerVolumeFactor * fator * globalVolume;
             fadeVolumeFactor = fator;
         }
 
