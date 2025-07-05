@@ -42,11 +42,11 @@ namespace TenonKit.Choir {
             if (audioSource == null || audioSource.clip == null) {
                 return false;
             }
+            audioSource.volume = playerVolumeFactor * fadeVolumeFactor;
             if (audioSource.isPlaying) {
-                audioSource.Stop();
+                return true;
             }
             audioSource.Play();
-            audioSource.volume = playerVolumeFactor * fadeVolumeFactor;
             return true;
         }
 
