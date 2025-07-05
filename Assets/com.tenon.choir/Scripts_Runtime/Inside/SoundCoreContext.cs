@@ -14,9 +14,9 @@ namespace TenonKit.Choir {
         Dictionary<string, List<SoundPlayer>> playerGroups;
         SoundPlayer[] temp;
 
-        List<SoundFadeTaskModel> fadeOutTasks;
-        List<SoundFadeTaskModel> fadeInTasks;
-        List<SoundFadeTaskModel> removeList;
+        Dictionary<int, SoundFadeTaskModel> fadeOutTasks;
+        Dictionary<int, SoundFadeTaskModel> fadeInTasks;
+        Dictionary<int, SoundFadeTaskModel> removeList;
 
         Transform soundRoot;
         internal Transform SoundRoot => soundRoot;
@@ -27,9 +27,9 @@ namespace TenonKit.Choir {
             iDService = new SoundIDService();
             singlePlayers = new SortedList<int, SoundPlayer>();
             temp = new SoundPlayer[capacity];
-            fadeOutTasks = new List<SoundFadeTaskModel>(capacity);
-            fadeInTasks = new List<SoundFadeTaskModel>(capacity);
-            removeList = new List<SoundFadeTaskModel>(capacity);
+            fadeOutTasks = new Dictionary<int, SoundFadeTaskModel>(capacity);
+            fadeInTasks = new Dictionary<int, SoundFadeTaskModel>(capacity);
+            removeList = new Dictionary<int, SoundFadeTaskModel>(capacity);
             globalVolume = 1.0f;
         }
 
@@ -39,13 +39,13 @@ namespace TenonKit.Choir {
 
         #region Fade Out
         internal void AddFadeOutTask(SoundFadeTaskModel task) {
-            if (!fadeOutTasks.Contains(task)) {
-                fadeOutTasks.Add(task);
+            if (!fadeOutTasks.ContainsKey(task.playerID)) {
+                fadeOutTasks.Add(task.playerID, task);
             }
         }
 
-        internal void RemoveFadeOutTask(SoundFadeTaskModel task) {
-            fadeOutTasks.Remove(task);
+        internal void RemoveFadeOutTask(int playerID) {
+            fadeOutTasks.Remove(playerID);
         }
 
         public delegate void RefAction<T>(ref T item);
@@ -56,17 +56,21 @@ namespace TenonKit.Choir {
                 fadeOutTasks[i] = task;
             }
         }
+
+        internal bool IsFadingOut(int playerID) {
+            return fadeOutTasks.ContainsKey(playerID);
+        }
         #endregion
 
         #region Fade In
         internal void AddFadeInTask(SoundFadeTaskModel task) {
-            if (!fadeInTasks.Contains(task)) {
-                fadeInTasks.Add(task);
+            if (!fadeInTasks.ContainsKey(task.playerID)) {
+                fadeInTasks.Add(task.playerID, task);
             }
         }
 
-        internal void RemoveFadeInTask(SoundFadeTaskModel task) {
-            fadeInTasks.Remove(task);
+        internal void RemoveFadeInTask(int playerID) {
+            fadeInTasks.Remove(playerID);
         }
 
         internal void FadeInTaskForEach(RefAction<SoundFadeTaskModel> action) {
@@ -75,6 +79,10 @@ namespace TenonKit.Choir {
                 action(ref task);
                 fadeInTasks[i] = task;
             }
+        }
+
+        internal bool IsFadingIn(int playerID) {
+            return fadeInTasks.ContainsKey(playerID);
         }
         #endregion
 
@@ -166,8 +174,8 @@ namespace TenonKit.Choir {
 
         #region Remove Task
         internal void AddRemoveTask(SoundFadeTaskModel task) {
-            if (!removeList.Contains(task)) {
-                removeList.Add(task);
+            if (!removeList.ContainsKey(task.playerID)) {
+                removeList.Add(task.playerID, task);
             }
         }
 

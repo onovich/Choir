@@ -36,9 +36,9 @@ namespace TenonKit.Choir {
             ApplyFadeOutTask(dt);
             ctx.RemoveTaskForEach((task) => {
                 if (task.fadeType == SoundFadeEnum.FadeIn) {
-                    ctx.RemoveFadeInTask(task);
+                    ctx.RemoveFadeInTask(task.playerID);
                 } else if (task.fadeType == SoundFadeEnum.FadeOut) {
-                    ctx.RemoveFadeOutTask(task);
+                    ctx.RemoveFadeOutTask(task.playerID);
                 }
             });
             ctx.ClearRemoveTask();
@@ -154,6 +154,14 @@ namespace TenonKit.Choir {
                 soundPlayer.SetAudioClip(clip);
             }
 
+            if (ctx.IsFadingIn(id)) {
+                ctx.RemoveFadeInTask(id);
+            }
+            if (ctx.IsFadingOut(id)) {
+                ctx.RemoveFadeOutTask(id);
+                soundPlayer.Stop();
+            }
+
             if (fadeIn) {
                 var task = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeIn, duration,
                     easingType, easingMode);
@@ -192,6 +200,12 @@ namespace TenonKit.Choir {
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
+            if (ctx.IsFadingIn(id)) {
+                ctx.RemoveFadeInTask(id);
+            }
+            if (ctx.IsFadingOut(id)) {
+                ctx.RemoveFadeOutTask(id);
+            }
             soundPlayer.Pause();
         }
 
@@ -201,6 +215,12 @@ namespace TenonKit.Choir {
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
+            if (ctx.IsFadingIn(id)) {
+                ctx.RemoveFadeInTask(id);
+            }
+            if (ctx.IsFadingOut(id)) {
+                ctx.RemoveFadeOutTask(id);
+            }
             soundPlayer.UnPause();
         }
 
@@ -209,6 +229,12 @@ namespace TenonKit.Choir {
             var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
             if (!has) {
                 CLog.Log($"SoundPlayer not found ID = {id}");
+            }
+            if (ctx.IsFadingIn(id)) {
+                ctx.RemoveFadeInTask(id);
+            }
+            if (ctx.IsFadingOut(id)) {
+                ctx.RemoveFadeOutTask(id);
             }
             if (fadeOut) {
                 var task = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeOut, duration,
