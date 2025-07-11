@@ -17,7 +17,7 @@ namespace TenonKit.Choir {
         Dictionary<int, SoundFadeTaskModel> fadeOutTasks;
         Dictionary<int, SoundFadeTaskModel> fadeInTasks;
         Dictionary<int, SoundFadeTaskModel> removeList;
-
+        internal Dictionary<int, Action> fadeOutCallbacks;
         Transform soundRoot;
         internal Transform SoundRoot => soundRoot;
 
@@ -30,6 +30,7 @@ namespace TenonKit.Choir {
             fadeOutTasks = new Dictionary<int, SoundFadeTaskModel>(capacity);
             fadeInTasks = new Dictionary<int, SoundFadeTaskModel>(capacity);
             removeList = new Dictionary<int, SoundFadeTaskModel>(capacity);
+            fadeOutCallbacks = new Dictionary<int, Action>(capacity);
             globalVolume = 1.0f;
         }
 
@@ -59,6 +60,25 @@ namespace TenonKit.Choir {
 
         internal bool IsFadingOut(int playerID) {
             return fadeOutTasks.ContainsKey(playerID);
+        }
+
+        internal void AddFadeOutCallback(int playerID, Action callback) {
+            if (fadeOutCallbacks.ContainsKey(playerID)) {
+                fadeOutCallbacks[playerID] = callback;
+            } else {
+                fadeOutCallbacks.Add(playerID, callback);
+            }
+        }
+
+        internal void RemoveFadeOutCallback(int playerID) {
+            if (!fadeOutCallbacks.ContainsKey(playerID)) {
+                return;
+            }
+            fadeOutCallbacks.Remove(playerID);
+        }
+
+        internal bool TryGetFadeOutCallback(int playerID, out Action callback) {
+            return fadeOutCallbacks.TryGetValue(playerID, out callback);
         }
         #endregion
 
@@ -198,6 +218,7 @@ namespace TenonKit.Choir {
             fadeOutTasks.Clear();
             fadeInTasks.Clear();
             removeList.Clear();
+            fadeOutCallbacks.Clear();
         }
 
     }

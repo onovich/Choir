@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 using MortiseFrame.Swing;
 using System.Threading;
+using System;
 
 namespace TenonKit.Choir {
 
@@ -92,6 +93,12 @@ namespace TenonKit.Choir {
                 if (timer >= duration) {
                     soundPlayer.SetFadeVolume(0, ctx.globalVolume);
                     soundPlayer.Stop();
+
+                    if (ctx.TryGetFadeOutCallback(task.playerID, out Action callback)) {
+                        callback.Invoke();
+                        ctx.RemoveFadeOutCallback(task.playerID);
+                    }
+
                     ctx.AddRemoveTask(task);
                     return;
                 }
@@ -142,6 +149,7 @@ namespace TenonKit.Choir {
             }
             soundPlayer.TearDown();
             ctx.RemoveSinglePlayer(soundPlayer);
+            ctx.RemoveFadeOutCallback(id);
         }
 
         // Play
@@ -172,6 +180,37 @@ namespace TenonKit.Choir {
             }
             soundPlayer.TryPlay();
             soundPlayer.SetFadeVolume(1, ctx.globalVolume);
+        }
+
+        public void SetAndFadeTo(int id, AudioClip clip, float fadeOutDuration = 0.5f, float fadeInDuration = 0.5f,
+                        EasingType easingType = EasingType.Linear, EasingMode easingMode = EasingMode.None) {
+            var has = ctx.TryGetSinglePlayer(id, out SoundPlayer soundPlayer);
+            if (!has) {
+                CLog.Log($"SoundPlayer not found ID = {id}");
+                return;
+            }
+
+            if (soundPlayer.IsPlaying) {
+                if (ctx.IsFadingIn(id)) {
+                    ctx.RemoveFadeInTask(id);
+                }
+                if (ctx.IsFadingOut(id)) {
+                    ctx.RemoveFadeOutTask(id);
+                }
+
+                var fadeOutTask = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeOut, fadeOutDuration, easingType, easingMode);
+                ctx.AddFadeOutTask(fadeOutTask);
+
+                ctx.AddFadeOutCallback(id, () => {
+                    if (ctx.TryGetSinglePlayer(id, out SoundPlayer player)) {
+                        player.SetAudioClip(clip);
+                        SetAndPlay(id, clip, true, fadeInDuration, easingType, easingMode);
+                    }
+                });
+            }
+            else {
+                SetAndPlay(id, clip, true, fadeInDuration, easingType, easingMode);
+            }
         }
 
         SoundFadeTaskModel CreateFadeTask(SoundPlayer player, SoundFadeEnum fadeType, float duration, EasingType easingType, EasingMode easingMode) {
