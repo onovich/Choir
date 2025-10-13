@@ -50,6 +50,15 @@ namespace TenonKit.Choir {
             return true;
         }
 
+        internal bool TryPlayOneShot(AudioClip clip) {
+            if (audioSource == null || clip == null) {
+                return false;
+            }
+            audioSource.volume = playerVolumeFactor * fadeVolumeFactor;
+            audioSource.PlayOneShot(clip);
+            return true;
+        }
+
         internal void Stop() {
             audioSource.Stop();
         }

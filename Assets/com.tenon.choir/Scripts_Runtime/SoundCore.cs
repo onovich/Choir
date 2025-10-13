@@ -207,8 +207,7 @@ namespace TenonKit.Choir {
                         SetAndPlay(id, clip, true, fadeInDuration, easingType, easingMode);
                     }
                 });
-            }
-            else {
+            } else {
                 SetAndPlay(id, clip, true, fadeInDuration, easingType, easingMode);
             }
         }
@@ -338,6 +337,19 @@ namespace TenonKit.Choir {
                         array[i].SetAudioClip(clip);
                     }
                     array[i].TryPlay();
+                    return;
+                }
+            }
+        }
+
+        public void PlayOneShotInGroupIfFree(string groupName, AudioClip clip) {
+            var len = ctx.TakeAllPlayerInGroup(groupName, out SoundPlayer[] array);
+            for (int i = 0; i < len; i++) {
+                if (array[i].IsPlaying == false) {
+                    if (clip != null) {
+                        array[i].SetAudioClip(clip);
+                    }
+                    array[i].TryPlayOneShot(clip);
                     return;
                 }
             }
