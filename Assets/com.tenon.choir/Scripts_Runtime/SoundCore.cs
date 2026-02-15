@@ -42,6 +42,14 @@ namespace TenonKit.Choir {
                     ctx.RemoveFadeOutTask(task.playerID);
                 }
             });
+            ctx.ModifiedTaskForEach((task) => {
+                if (task.fadeType == SoundFadeEnum.FadeIn) {
+                    ctx.ModifyFadeInTask(task);
+                } else if (task.fadeType == SoundFadeEnum.FadeOut) {
+                    ctx.ModifyFadeOutTask(task);
+                }
+            });
+            ctx.ClearModifiedTask();
             ctx.ClearRemoveTask();
         }
 
@@ -163,10 +171,10 @@ namespace TenonKit.Choir {
             }
 
             if (ctx.IsFadingIn(id)) {
-                ctx.RemoveFadeInTask(id);
+                ctx.PreRemoveFadeInTask(id);
             }
             if (ctx.IsFadingOut(id)) {
-                ctx.RemoveFadeOutTask(id);
+                ctx.PreRemoveFadeOutTask(id);
                 soundPlayer.Stop();
             }
 
@@ -192,10 +200,10 @@ namespace TenonKit.Choir {
 
             if (soundPlayer.IsPlaying) {
                 if (ctx.IsFadingIn(id)) {
-                    ctx.RemoveFadeInTask(id);
+                    ctx.PreRemoveFadeInTask(id);
                 }
                 if (ctx.IsFadingOut(id)) {
-                    ctx.RemoveFadeOutTask(id);
+                    ctx.PreRemoveFadeOutTask(id);
                 }
 
                 var fadeOutTask = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeOut, fadeOutDuration, easingType, easingMode);
@@ -239,10 +247,10 @@ namespace TenonKit.Choir {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
             if (ctx.IsFadingIn(id)) {
-                ctx.RemoveFadeInTask(id);
+                ctx.PreRemoveFadeInTask(id);
             }
             if (ctx.IsFadingOut(id)) {
-                ctx.RemoveFadeOutTask(id);
+                ctx.PreRemoveFadeOutTask(id);
             }
             soundPlayer.Pause();
         }
@@ -254,10 +262,10 @@ namespace TenonKit.Choir {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
             if (ctx.IsFadingIn(id)) {
-                ctx.RemoveFadeInTask(id);
+                ctx.PreRemoveFadeInTask(id);
             }
             if (ctx.IsFadingOut(id)) {
-                ctx.RemoveFadeOutTask(id);
+                ctx.PreRemoveFadeOutTask(id);
             }
             soundPlayer.UnPause();
         }
@@ -269,10 +277,10 @@ namespace TenonKit.Choir {
                 CLog.Log($"SoundPlayer not found ID = {id}");
             }
             if (ctx.IsFadingIn(id)) {
-                ctx.RemoveFadeInTask(id);
+                ctx.PreRemoveFadeInTask(id);
             }
             if (ctx.IsFadingOut(id)) {
-                ctx.RemoveFadeOutTask(id);
+                ctx.PreRemoveFadeOutTask(id);
             }
             if (fadeOut) {
                 var task = CreateFadeTask(soundPlayer, SoundFadeEnum.FadeOut, duration,
